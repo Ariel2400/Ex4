@@ -6,7 +6,7 @@
 
 #define FILE_LIST_PATH "./cache/file_list.txt"
 
-void create_file_list() {
+void Cache::create_file_list() {
   std::ofstream create_file_list(FILE_LIST_PATH, std::ios::app);
   if (!create_file_list) {
     std::cerr << "Unable to create cache file list" << std::endl;
@@ -15,7 +15,7 @@ void create_file_list() {
   }
 }
 
-std::string get_suffix(const std::string action_description) {
+std::string Cache::get_suffix(const std::string action_description) {
   std::string department(
       action_description.substr(0, action_description.find(" ")));
   if (department.compare("matrix") == 0 || department.compare("hash") == 0) {
@@ -27,7 +27,7 @@ std::string get_suffix(const std::string action_description) {
   return "";
 }
 
-int get_action_serial_number(const std::string action_description) {
+int Cache::get_action_serial_number(const std::string action_description) {
   int serial_number = 1;
   std::string line;
   create_file_list();
@@ -47,7 +47,7 @@ int get_action_serial_number(const std::string action_description) {
   return 0;
 }
 
-int get_next_serial_number() {
+int Cache::get_next_serial_number() {
   int serial_number = 1;
   std::string line;
   create_file_list();
@@ -63,14 +63,14 @@ int get_next_serial_number() {
   return serial_number;
 }
 
-bool is_file_in_cache(const std::string action_description) {
+bool Cache::is_file_in_cache(const std::string action_description) {
   if (get_action_serial_number(action_description) == 0) {
     return false;
   }
   return true;
 }
 
-void search(const std::string action_description) {
+void Cache::search(const std::string action_description) {
   if (is_file_in_cache(action_description)) {
     std::cout << "result found in cache" << std::endl;
   } else {
@@ -78,7 +78,7 @@ void search(const std::string action_description) {
   }
 }
 
-void print(const std::string action_description) {
+void Cache::print(const std::string action_description) {
   int serial_number = get_action_serial_number(action_description);
   std::string suffix(get_suffix(action_description));
   std::ifstream file_input_stream("cache/" + std::to_string(serial_number) +
@@ -92,7 +92,7 @@ void print(const std::string action_description) {
   }
 }
 
-void store_into(const std::string src_file_path,
+void Cache::store_into(const std::string src_file_path,
                        const std::string action_description) {
   if (!is_file_in_cache(action_description)) {
     std::ifstream src_file_input_stream("../" + src_file_path);
@@ -123,7 +123,7 @@ void store_into(const std::string src_file_path,
   }
 }
 
-void load_from(const std::string action_description,
+void Cache::load_from(const std::string action_description,
                       const std::string dest_file_path) {
   int serial_number = get_action_serial_number(action_description);
   std::string suffix(get_suffix(action_description));
@@ -145,7 +145,7 @@ void load_from(const std::string action_description,
   }
 }
 
-void clear() {
+void Cache::clear() {
   DIR *cache = opendir("cache");
   struct dirent *next_file;
   std::string filepath;
