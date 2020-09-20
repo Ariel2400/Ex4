@@ -1,7 +1,11 @@
 #include <queue>
-#include <iostream>
+//#include <iostream>
 
 #include "BFS_matrix_searcher.hpp"
+
+#define BLOCK 0
+#define VISITED 1
+#define NOT_VISITED 0
 
 struct Step {
     public:
@@ -38,14 +42,14 @@ SearchStatus BFSMatrixSearcher::search(const Problem &problem, std::string* solu
     std::unique_ptr<Matrix> visited = std::make_unique<Matrix>(height, width);
     for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
-            if (matrix->get_value(i, j) == 0) {
-                visited->set_value(i, j, 1);
+            if (matrix->get_value(i, j) == BLOCK) {
+                visited->set_value(i, j, VISITED);
             } else {
-                visited->set_value(i, j, 0);
+                visited->set_value(i, j, NOT_VISITED);
             }
             if (i == problem.start_row && j == problem.start_column) {
                 step_queue.push(Step(i, j, ""));
-                visited->set_value(i, j, 1);
+                visited->set_value(i, j, VISITED);
             }
         }
     }
@@ -61,19 +65,19 @@ SearchStatus BFSMatrixSearcher::search(const Problem &problem, std::string* solu
         }
         if (step.row - 1 >= 0 && visited->get_value(step.row - 1, step.column) == 0) { 
             step_queue.push(Step(step.row - 1, step.column, step.path + "Up,")); 
-            visited->set_value(step.row - 1, step.column, 1); 
+            visited->set_value(step.row - 1, step.column, VISITED); 
         }
         if (step.row + 1 < height && visited->get_value(step.row + 1, step.column) == 0) { 
             step_queue.push(Step(step.row + 1, step.column, step.path + "Down,")); 
-            visited->set_value(step.row + 1, step.column, 1); 
+            visited->set_value(step.row + 1, step.column, VISITED); 
         }
         if (step.column - 1 >= 0 && visited->get_value(step.row, step.column - 1) == 0) { 
             step_queue.push(Step(step.row, step.column - 1, step.path + "Left,")); 
-            visited->set_value(step.row, step.column - 1, 1); 
+            visited->set_value(step.row, step.column - 1, VISITED); 
         }
         if (step.column + 1 < width && visited->get_value(step.row, step.column + 1) == 0) { 
             step_queue.push(Step(step.row, step.column + 1, step.path + "Right,")); 
-            visited->set_value(step.row, step.column + 1, 1); 
+            visited->set_value(step.row, step.column + 1, VISITED); 
         }
     }
     return PATH_NOT_FOUNT;

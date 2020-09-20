@@ -138,6 +138,10 @@ ErrorCode matrix_setValue(PMatrix matrix, uint32_t rowIndex, uint32_t colIndex,
   if (matrix->array == NULL) {
     return ERROR_NULL_OUTPUT_POINTER;
   }
+  if (rowIndex < 0 || rowIndex >= *(matrix->height) 
+      || colIndex < 0 || colIndex >= *(matrix->width)) {
+    return ERROR_INVALID_MATRIX_SIZES;
+  }
   uint32_t width;
   matrix_getWidth(matrix, &width);
   matrix->array[rowIndex * width + colIndex] = value;
@@ -154,6 +158,10 @@ ErrorCode matrix_getValue(CPMatrix matrix, uint32_t rowIndex, uint32_t colIndex,
   }
   if (value == NULL) {
     return ERROR_NULL_OUTPUT_POINTER;
+  }
+  if (rowIndex < 0 || rowIndex >= *(matrix->height) 
+      || colIndex < 0 || colIndex >= *(matrix->width)) {
+    return ERROR_INVALID_MATRIX_SIZES;
   }
   uint32_t width;
   matrix_getWidth(matrix, &width);
