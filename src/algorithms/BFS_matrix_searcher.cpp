@@ -7,19 +7,6 @@
 #define VISITED 1
 #define NOT_VISITED 0
 
-struct Step {
-    public:
-        int row;
-        int column;
-        std::string path;
-
-        Step(int row, int column, std::string path) {
-            this->row = row;
-            this->column = column;
-            this->path = path;
-        }
-};
-
 BFSMatrixSearcher::BFSMatrixSearcher() {}
 
 BFSMatrixSearcher::BFSMatrixSearcher(const BFSMatrixSearcher &other) {}
@@ -28,7 +15,7 @@ BFSMatrixSearcher &BFSMatrixSearcher::operator=(const BFSMatrixSearcher &other) 
     return *this;
 }
 
-SearchStatus BFSMatrixSearcher::search(const Problem &problem, std::string* solution) {
+SearchStatus BFSMatrixSearcher::search(const Problem &problem, std::string* solution, int* weight) {
     std::unique_ptr<Matrix> matrix = std::make_unique<Matrix>(*(problem.matrix));
     int height = matrix->get_height();
     int width = matrix->get_width();
@@ -37,6 +24,11 @@ SearchStatus BFSMatrixSearcher::search(const Problem &problem, std::string* solu
         || problem.end_row < 0 || problem.end_row >= height
         || problem.end_column < 0 || problem.end_column >= width) {
         return OUT_OF_BOUNDS_INDEX;
+    }
+    if (problem.start_row == problem.end_row && problem.start_column == problem.end_column) {
+        *solution = "";
+        *weight = 0;
+        return PATH_FOUND;
     }
     std::queue<Step> step_queue;
     std::unique_ptr<Matrix> visited = std::make_unique<Matrix>(height, width);
@@ -47,40 +39,37 @@ SearchStatus BFSMatrixSearcher::search(const Problem &problem, std::string* solu
             } else {
                 visited->set_value(i, j, NOT_VISITED);
             }
-            if (i == problem.start_row && j == problem.start_column) {
-                step_queue.push(Step(i, j, ""));
-                visited->set_value(i, j, VISITED);
-            }
         }
     }
+    step_queue.push(Step(problem.start_row, problem.start_column, "", matrix->get_value(problem.start_row, problem.start_column)));
+    visited->set_value(problem.start_row, problem.start_column, VISITED);
     while (!step_queue.empty()) {
         Step step = step_queue.front();
         step_queue.pop();
         if (step.row == problem.end_row && step.column == problem.end_column) {
-            if (step.path.length() != 0) {
-                step.path.pop_back();
-            }
+            step.path.pop_back();
             *solution = step.path;
+            *weight = step.weight;
             return PATH_FOUND;
         }
         if (step.row - 1 >= 0 && visited->get_value(step.row - 1, step.column) == 0) { 
-            step_queue.push(Step(step.row - 1, step.column, step.path + "Up,")); 
+            step_queue.push(Step(step.row - 1, step.column, step.path + "Up,", step.weight + matrix->get_value(step.row - 1, step.column))); 
             visited->set_value(step.row - 1, step.column, VISITED); 
         }
         if (step.row + 1 < height && visited->get_value(step.row + 1, step.column) == 0) { 
-            step_queue.push(Step(step.row + 1, step.column, step.path + "Down,")); 
+            step_queue.push(Step(step.row + 1, step.column, step.path + "Down,", step.weight + matrix->get_value(step.row + 1, step.column))); 
             visited->set_value(step.row + 1, step.column, VISITED); 
         }
         if (step.column - 1 >= 0 && visited->get_value(step.row, step.column - 1) == 0) { 
-            step_queue.push(Step(step.row, step.column - 1, step.path + "Left,")); 
+            step_queue.push(Step(step.row, step.column - 1, step.path + "Left,", step.weight + matrix->get_value(step.row, step.column - 1))); 
             visited->set_value(step.row, step.column - 1, VISITED); 
         }
         if (step.column + 1 < width && visited->get_value(step.row, step.column + 1) == 0) { 
-            step_queue.push(Step(step.row, step.column + 1, step.path + "Right,")); 
+            step_queue.push(Step(step.row, step.column + 1, step.path + "Right,", step.weight + matrix->get_value(step.row, step.column + 1))); 
             visited->set_value(step.row, step.column + 1, VISITED); 
         }
     }
-    return PATH_NOT_FOUNT;
+    return PATH_NOT_FOUND;
 }
 
 BFSMatrixSearcher::~BFSMatrixSearcher(){}

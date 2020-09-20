@@ -5,7 +5,7 @@
 
 typedef enum {
   PATH_FOUND = 0,
-  PATH_NOT_FOUNT = 1,
+  PATH_NOT_FOUND = 1,
   OUT_OF_BOUNDS_INDEX = 2,
 } SearchStatus;
 
@@ -19,5 +19,5 @@ typedef struct {
 
 class MatrixSearcher {
     public:
-        virtual SearchStatus search(const Problem &problem, std::string* solution) = 0;
+        virtual SearchStatus search(const Problem &problem, std::string* solution, int* weight) = 0;
 };

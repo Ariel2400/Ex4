@@ -15,36 +15,41 @@ DFSMatrixSearcher &DFSMatrixSearcher::operator=(const DFSMatrixSearcher &other) 
     return *this;
 }
 
-bool DFSMatrixSearcher::is_there_path(const Problem &problem, int i, int j, std::unique_ptr<Matrix> &visited, std::string* solution) {
+bool DFSMatrixSearcher::is_there_path(const Problem &problem, int i, int j, std::unique_ptr<Matrix> &visited, std::string* solution, int* weight) {
     std::unique_ptr<Matrix> matrix = std::make_unique<Matrix>(*(problem.matrix));
     int height = matrix->get_height();
     int width = matrix->get_width();
     if (i >= 0 && i < height && j >= 0 && j < width && matrix->get_value(i, j) != BLOCK && visited->get_value(i, j) == NOT_VISITED) {
         visited->set_value(i, j, VISITED);
         if (i == problem.end_row && j == problem.end_column) {
+            *weight += matrix->get_value(i, j);
             return true;
         }
         if (is_there_path(problem, i - 1, j, visited, solution)) {
             *solution = "Up," + *solution;
+            *weight += matrix->get_value(i, j);
             return true;
         }
         if (is_there_path(problem, i + 1, j, visited, solution)) {
             *solution = "Down," + *solution;
+            *weight += matrix->get_value(i, j);
             return true;
         }
         if (is_there_path(problem, i, j - 1, visited, solution)) {
             *solution = "Left," + *solution;
+            *weight += matrix->get_value(i, j);
             return true;
         }
         if (is_there_path(problem, i, j + 1, visited, solution)) {
             *solution = "Right," + *solution;
+            *weight += matrix->get_value(i, j);
             return true;
         }
     }
     return false;
 }
 
-SearchStatus DFSMatrixSearcher::search(const Problem &problem, std::string* solution) {
+SearchStatus DFSMatrixSearcher::search(const Problem &problem, std::string* solution, int* weight) {
     std::unique_ptr<Matrix> matrix = std::make_unique<Matrix>(*(problem.matrix));
     int height = matrix->get_height();
     int width = matrix->get_width();
@@ -54,6 +59,11 @@ SearchStatus DFSMatrixSearcher::search(const Problem &problem, std::string* solu
         || problem.end_column < 0 || problem.end_column >= width) {
         return OUT_OF_BOUNDS_INDEX;
     }
+    if (problem.start_row == problem.end_row && problem.start_column == problem.end_column) {
+        *solution = "";
+        *weight = 0;
+        return PATH_FOUND;
+    }
     std::unique_ptr<Matrix> visited = std::make_unique<Matrix>(height, width);
     for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
@@ -61,13 +71,12 @@ SearchStatus DFSMatrixSearcher::search(const Problem &problem, std::string* solu
         }
     }
     *solution = "";
-    if (is_there_path(problem, problem.start_row, problem.start_column, visited, solution)) {
-        if ((*solution).length() != 0) {
-                (*solution).pop_back();
-        }
+    *weight = 0;
+    if (is_there_path(problem, problem.start_row, problem.start_column, visited, solution, weight)) {
+        (*solution).pop_back();
         return PATH_FOUND;
     }
-    return PATH_NOT_FOUNT;
+    return PATH_NOT_FOUND;
 }
 
 DFSMatrixSearcher::~DFSMatrixSearcher(){}

@@ -11,5 +11,5 @@ class DFSMatrixSearcher: public MatrixSearcher {
         virtual SearchStatus search(const Problem &problem , std::string* solution);
         ~DFSMatrixSearcher();
     private:
-        bool is_there_path(const Problem &problem, int i, int j, std::unique_ptr<Matrix> &visited, std::string* solution);
+        bool is_there_path(const Problem &problem, int i, int j, std::unique_ptr<Matrix> &visited, std::string* solution, int* weight);
 };
