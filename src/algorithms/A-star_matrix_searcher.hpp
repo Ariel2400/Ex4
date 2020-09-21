@@ -38,11 +38,25 @@ struct CompareWeight {
 
 class AstarMatrixSearcher: public MatrixSearcher {
     public:
+        // constructor
         AstarMatrixSearcher();
+
+        // copy constructor
         AstarMatrixSearcher(const AstarMatrixSearcher &other);
+
+        // copy assignment
         AstarMatrixSearcher &operator=(const AstarMatrixSearcher &other);
+
+        /* problem contains a matrix and start / end coordinates.
+           assigns a description of the most efficient path from start to end into solution
+           and its weight into weight. returns a fitting search status. */
         virtual SearchStatus search(const Problem &problem , std::string* solution, int* weight);
+
+        // destructor
         ~AstarMatrixSearcher();
+
     private:
+        /* adds newStep to queue it no step in queue matches its coordinates.
+           if a step in queue matches its coordinates and has a less efficient path its replaced by newStep. */
         void update_in_queue(std::priority_queue<Step, std::vector<Step>, CompareWeight>* queue, Step newStep);
 };

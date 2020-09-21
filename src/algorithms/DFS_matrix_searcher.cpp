@@ -15,6 +15,7 @@ DFSMatrixSearcher &DFSMatrixSearcher::operator=(const DFSMatrixSearcher &other) 
     return *this;
 }
 
+// recursively looks for a path from each cell by looking for a path from the adjacent cells and marking visited cells
 bool DFSMatrixSearcher::is_there_path(const Problem &problem, int i, int j, std::unique_ptr<Matrix> &visited, std::string* solution, int* weight) {
     std::unique_ptr<Matrix> matrix = std::make_unique<Matrix>(*(problem.matrix));
     int height = matrix->get_height();
@@ -25,22 +26,22 @@ bool DFSMatrixSearcher::is_there_path(const Problem &problem, int i, int j, std:
             *weight += matrix->get_value(i, j);
             return true;
         }
-        if (is_there_path(problem, i - 1, j, visited, solution)) {
+        if (is_there_path(problem, i - 1, j, visited, solution, weight)) {
             *solution = "Up," + *solution;
             *weight += matrix->get_value(i, j);
             return true;
         }
-        if (is_there_path(problem, i + 1, j, visited, solution)) {
+        if (is_there_path(problem, i + 1, j, visited, solution, weight)) {
             *solution = "Down," + *solution;
             *weight += matrix->get_value(i, j);
             return true;
         }
-        if (is_there_path(problem, i, j - 1, visited, solution)) {
+        if (is_there_path(problem, i, j - 1, visited, solution, weight)) {
             *solution = "Left," + *solution;
             *weight += matrix->get_value(i, j);
             return true;
         }
-        if (is_there_path(problem, i, j + 1, visited, solution)) {
+        if (is_there_path(problem, i, j + 1, visited, solution, weight)) {
             *solution = "Right," + *solution;
             *weight += matrix->get_value(i, j);
             return true;
@@ -53,17 +54,20 @@ SearchStatus DFSMatrixSearcher::search(const Problem &problem, std::string* solu
     std::unique_ptr<Matrix> matrix = std::make_unique<Matrix>(*(problem.matrix));
     int height = matrix->get_height();
     int width = matrix->get_width();
+    // check if start and end coordinates are correct
     if (problem.start_row < 0 || problem.start_row >= height
         || problem.start_column < 0 || problem.start_column >= width
         || problem.end_row < 0 || problem.end_row >= height
         || problem.end_column < 0 || problem.end_column >= width) {
         return OUT_OF_BOUNDS_INDEX;
     }
+    // check if the path starts and ends on the same cell
     if (problem.start_row == problem.end_row && problem.start_column == problem.end_column) {
         *solution = "";
         *weight = 0;
         return PATH_FOUND;
     }
+    // mark which cells are done being developed
     std::unique_ptr<Matrix> visited = std::make_unique<Matrix>(height, width);
     for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
@@ -103,7 +107,3 @@ int main() {
 }
 */
 
-int main() {
-    std::unique_ptr<Matrix> matrix = std::make_unique<Matrix>(4, 4);
-    matrix->set_value(-1, 2, 0);
-}

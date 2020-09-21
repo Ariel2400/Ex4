@@ -10,14 +10,17 @@ typedef enum {
 } SearchStatus;
 
 typedef struct {
-    std::unique_ptr<Matrix> matrix;
-    int start_row;
-    int start_column;
-    int end_row;
-    int end_column;
+  std::unique_ptr<Matrix> matrix;
+  int start_row;
+  int start_column;
+  int end_row;
+  int end_column;
 } Problem;
 
 class MatrixSearcher {
-    public:
+  public:
+    /* problem contains a matrix and start / end coordinates.
+       assigns a description of a path from start to end into solution
+       and its weight into weight. returns a fitting search status. */
         virtual SearchStatus search(const Problem &problem, std::string* solution, int* weight) = 0;
 };

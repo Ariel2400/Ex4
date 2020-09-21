@@ -19,18 +19,22 @@ SearchStatus BFSMatrixSearcher::search(const Problem &problem, std::string* solu
     std::unique_ptr<Matrix> matrix = std::make_unique<Matrix>(*(problem.matrix));
     int height = matrix->get_height();
     int width = matrix->get_width();
+    // check if start and end coordinates are correct
     if (problem.start_row < 0 || problem.start_row >= height
         || problem.start_column < 0 || problem.start_column >= width
         || problem.end_row < 0 || problem.end_row >= height
         || problem.end_column < 0 || problem.end_column >= width) {
         return OUT_OF_BOUNDS_INDEX;
     }
+    // check if the path starts and ends on the same cell
     if (problem.start_row == problem.end_row && problem.start_column == problem.end_column) {
         *solution = "";
         *weight = 0;
         return PATH_FOUND;
     }
+    // for cells that are being developed
     std::queue<Step> step_queue;
+    // mark which cells have already been visited
     std::unique_ptr<Matrix> visited = std::make_unique<Matrix>(height, width);
     for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
@@ -46,12 +50,14 @@ SearchStatus BFSMatrixSearcher::search(const Problem &problem, std::string* solu
     while (!step_queue.empty()) {
         Step step = step_queue.front();
         step_queue.pop();
+        // check if the algorithm reached the end
         if (step.row == problem.end_row && step.column == problem.end_column) {
             step.path.pop_back();
             *solution = step.path;
             *weight = step.weight;
             return PATH_FOUND;
         }
+        // the adjacent cells
         if (step.row - 1 >= 0 && visited->get_value(step.row - 1, step.column) == 0) { 
             step_queue.push(Step(step.row - 1, step.column, step.path + "Up,", step.weight + matrix->get_value(step.row - 1, step.column))); 
             visited->set_value(step.row - 1, step.column, VISITED); 

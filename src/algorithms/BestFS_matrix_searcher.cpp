@@ -44,29 +44,35 @@ SearchStatus BestFSMatrixSearcher::search(const Problem &problem, std::string* s
     std::unique_ptr<Matrix> matrix = std::make_unique<Matrix>(*(problem.matrix));
     int height = matrix->get_height();
     int width = matrix->get_width();
+    // check if start and end coordinates are correct
     if (problem.start_row < 0 || problem.start_row >= height
         || problem.start_column < 0 || problem.start_column >= width
         || problem.end_row < 0 || problem.end_row >= height
         || problem.end_column < 0 || problem.end_column >= width) {
         return OUT_OF_BOUNDS_INDEX;
     }
+    // check if the path starts and ends on the same cell
     if (problem.start_row == problem.end_row && problem.start_column == problem.end_column) {
         *solution = "";
         *weight = 0;
         return PATH_FOUND;
     }
+    // for cells that are being developed
     std::priority_queue<Step, std::vector<Step>, CompareWeight> open;
     open.push(Step(problem.start_row, problem.start_column, "", matrix->get_value(problem.start_row, problem.start_column)));
+    // mark which cells are done being developed
     std::unique_ptr<Matrix> closed = std::make_unique<Matrix>(height, width);
     for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
             closed->set_value(i, j, NOT_CLOSED);
         }
     }
+    // the adjacent cells
     std::vector<Step> successors;
     while (!open.empty()) {
         Step step = open.top();
         open.pop();
+        // check if the algorithm reached the end
         if (step.row == problem.end_row && step.column == problem.end_column) {
             step.path.pop_back();
             *solution = step.path;
@@ -94,6 +100,7 @@ SearchStatus BestFSMatrixSearcher::search(const Problem &problem, std::string* s
             }
         }
         successors.clear();
+        // mark cell as developed
         closed->set_value(step.row, step.column, CLOSED);
     }
     return PATH_NOT_FOUND;

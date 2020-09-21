@@ -44,32 +44,37 @@ SearchStatus AstarMatrixSearcher::search(const Problem &problem, std::string* so
     std::unique_ptr<Matrix> matrix = std::make_unique<Matrix>(*(problem.matrix));
     int height = matrix->get_height();
     int width = matrix->get_width();
+    // check if start and end coordinates are correct
     if (problem.start_row < 0 || problem.start_row >= height
         || problem.start_column < 0 || problem.start_column >= width
         || problem.end_row < 0 || problem.end_row >= height
         || problem.end_column < 0 || problem.end_column >= width) {
         return OUT_OF_BOUNDS_INDEX;
     }
+    // check if the path starts and ends on the same cell
     if (problem.start_row == problem.end_row && problem.start_column == problem.end_column) {
         *solution = "";
         *weight = 0;
         return PATH_FOUND;
     }
+    // for cells that are being developed
     std::priority_queue<Step, std::vector<Step>, CompareWeight> open;
     Step start(problem.start_row, problem.start_column, "", matrix->get_value(problem.start_row, problem.start_column));
     start.setHeuristic(problem.end_row, problem.end_column);
     open.push(start);
+    // mark which cells are done being developed
     std::unique_ptr<Matrix> closed = std::make_unique<Matrix>(height, width);
     for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
             closed->set_value(i, j, NOT_CLOSED);
         }
     }
+    // the adjacent cells
     std::vector<Step> successors;
     while (!open.empty()) {
         Step step = open.top();
-        std::cout << "out: " << step.row << " " << step.column << "  g:" << step.g << " h:" << step.h << " f:" << step.f << std::endl;
         open.pop();
+        // check if the algorithm reached the end
         if (step.row == problem.end_row && step.column == problem.end_column) {
             step.path.pop_back();
             *solution = step.path;
@@ -79,35 +84,31 @@ SearchStatus AstarMatrixSearcher::search(const Problem &problem, std::string* so
         if (step.row - 1 >= 0) {
             Step successor(step.row - 1, step.column, step.path + "Up,", step.g + matrix->get_value(step.row - 1, step.column));
             successor.setHeuristic(problem.end_row, problem.end_column);
-            //std::cout << "1: " << successor.row << " " << successor.column << std::endl;
             successors.push_back(successor);
         }
         if (step.row + 1 < height) {
             Step successor(step.row + 1, step.column, step.path + "Down,", step.g + matrix->get_value(step.row + 1, step.column));
             successor.setHeuristic(problem.end_row, problem.end_column);
-            //std::cout << "2: " << successor.row << " " << successor.column << std::endl;
             successors.push_back(successor);
         }
         if (step.column - 1 >= 0) {
             Step successor(step.row, step.column - 1, step.path + "Left,", step.g + matrix->get_value(step.row, step.column - 1));
             successor.setHeuristic(problem.end_row, problem.end_column);
-            //std::cout << "3: " << successor.row << " " << successor.column << std::endl;
             successors.push_back(successor);
         }
         if (step.column + 1 < width) {
             Step successor(step.row, step.column + 1, step.path + "Right,", step.g + matrix->get_value(step.row, step.column + 1));
             successor.setHeuristic(problem.end_row, problem.end_column);
-            //std::cout << "4: " << successor.row << " " << successor.column << std::endl;
             successors.push_back(successor);
         }
         for (int i = 0; i < successors.size(); ++i) {
             if (matrix->get_value(successors.at(i).row, successors.at(i).column) != BLOCK
                 && closed->get_value(successors.at(i).row, successors.at(i).column) != CLOSED) {
-                std::cout << "in:  " << successors.at(i).row << " " << successors.at(i).column << "  g:" << successors.at(i).g << " h:" << successors.at(i).h << " f:" << successors.at(i).f << std::endl;
                 update_in_queue(&open, successors.at(i));
             }
         }
         successors.clear();
+        // mark cell as developed
         closed->set_value(step.row, step.column, CLOSED);
     }
     return PATH_NOT_FOUND;
@@ -118,13 +119,13 @@ AstarMatrixSearcher::~AstarMatrixSearcher(){}
 
 int main() {
     std::unique_ptr<AstarMatrixSearcher> searcher = std::make_unique<AstarMatrixSearcher>();
-    Problem problem = {std::make_unique<Matrix>(3, 3), 1, 0, 0, 1};
+    Problem problem = {std::make_unique<Matrix>(3, 3), 0, 0, 0, 0};
     for (int i = 0; i < problem.matrix->get_height(); ++i) {
         for (int j =0; j < problem.matrix->get_width(); ++j) {
             problem.matrix->set_value(i, j, 1);
         }
     }
-    problem.matrix->set_value(0, 0, 0);
+    //problem.matrix->set_value(0, 0, 0);
     problem.matrix->set_value(1, 1, 0);
     problem.matrix->set_value(2, 0, 2);
     problem.matrix->set_value(1, 2, 6);
