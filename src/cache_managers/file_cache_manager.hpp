@@ -16,11 +16,11 @@ public:
 
   // adds file that was created by the described action to cache
   void store_into(const std::string src_file_path,
-                         const std::string action_description);
+                  const std::string action_description);
 
   // retrieves a file that was created by the described action from cache
   void load_from(const std::string action_description,
-                        const std::string dest_file_path);
+                 const std::string dest_file_path);
 
   // clears the cache
   void clear();

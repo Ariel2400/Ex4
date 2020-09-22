@@ -1,5 +1,5 @@
-#include <string>
 #include <memory>
+#include <string>
 
 #include "../matrices/matrix_class.hpp"
 
@@ -18,9 +18,10 @@ typedef struct {
 } Problem;
 
 class MatrixSearcher {
-  public:
-    /* problem contains a matrix and start / end coordinates.
-       assigns a description of a path from start to end into solution
-       and its weight into weight. returns a fitting search status. */
-        virtual SearchStatus search(const Problem &problem, std::string* solution, int* weight) = 0;
+public:
+  /* problem contains a matrix and start / end coordinates.
+     assigns a description of a path from start to end into solution
+     and its weight into weight. returns a fitting search status. */
+  virtual SearchStatus search(const Problem &problem, std::string *solution,
+                              int *weight) = 0;
 };
