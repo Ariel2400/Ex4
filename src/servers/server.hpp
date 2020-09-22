@@ -2,6 +2,6 @@
 
 class Server {
     public:
-        virtual void open(int port, ClientHandler const &c) = 0;
+        virtual void open(int port) = 0;
         virtual void stop() = 0;
 };
