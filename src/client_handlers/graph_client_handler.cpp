@@ -32,7 +32,7 @@ void GraphClientHandler::handleClient(int cs, int ss) {
 std::unique_ptr<Problem> parse_input(std::vector<std::string> input) {
   std::regex matrix_param("([1-9][0-9]*),([1-9][0-9]*)");
   std::regex matrix_line_format(
-      "(([0-9]+((.[0-9]+)?)*)|b,)*(([0-9]+((.[0-9]+)?))|b)");
+      "(([0-9]+((.[0-9]+)?)*)|b|B,)*(([0-9]+((.[0-9]+)?))|b|B)");
   std::regex io_line("([1-9][0-9]*|0),([1-9][0-9]*|0)");
   uint32_t line_len = -1;
   uint32_t height, width;
@@ -99,7 +99,7 @@ std::unique_ptr<Problem> parse_input(std::vector<std::string> input) {
           values.push_back(value);
         }
         for (int j = 0; j < values.size(); ++j) {
-          if(values[j] == "b"){
+          if(values[j] == "b"||values[j] == "B"){
             problem->matrix->set_value(i, j, 0.0);
           }
           problem->matrix->set_value(i, j, stod(values[j]));
