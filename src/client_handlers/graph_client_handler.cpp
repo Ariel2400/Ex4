@@ -25,7 +25,7 @@ void GraphClientHandler::handleClient(int cs, int ss) {
   else{
     result.append("status: " + std::to_string(status));
   }
-  write(cs)
+  write(cs, (void*)path.c_str(), path.size());
 };
 
 
