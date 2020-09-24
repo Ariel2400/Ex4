@@ -5,12 +5,12 @@
 
 struct Step {
 public:
-  int row;
-  int column;
+  uint32_t row;
+  uint32_t column;
   std::string path;
-  int weight;
+  uint32_t weight;
 
-  Step(int row, int column, std::string path, int weight) {
+  Step(uint32_t row, uint32_t column, std::string path, uint32_t weight) {
     this->row = row;
     this->column = column;
     this->path = path;
@@ -33,7 +33,7 @@ public:
      assigns a description of a path from start to end into solution
      and its weight into weight. returns a fitting search status. */
   virtual SearchStatus search(const Problem &problem, std::string *solution,
-                              int *weight);
+                              uint32_t *weight);
 
   // destructor
   ~BFSMatrixSearcher();

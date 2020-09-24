@@ -10,21 +10,21 @@
 
 struct Step {
 public:
-  int row;
-  int column;
+  uint32_t row;
+  uint32_t column;
   std::string path;
-  int g;
-  int h;
-  int f;
+  uint32_t g;
+  uint32_t h;
+  uint32_t f;
 
-  Step(int row, int column, std::string path, int g) {
+  Step(uint32_t row, uint32_t column, std::string path, uint32_t g) {
     this->row = row;
     this->column = column;
     this->path = path;
     this->g = g;
   }
 
-  void setHeuristic(int end_row, int end_column) {
+  void setHeuristic(uint32_t end_row, uint32_t end_column) {
     this->h = MIN_STEP_WEIGHT * (std::abs(end_row - this->row) +
                                  std::abs(end_column - this->column));
     this->f = this->g + this->h;
@@ -52,7 +52,7 @@ public:
      assigns a description of the most efficient path from start to end into
      solution and its weight into weight. returns a fitting search status. */
   virtual SearchStatus search(const Problem &problem, std::string *solution,
-                              int *weight);
+                              uint32_t *weight);
 
   // destructor
   ~AstarMatrixSearcher();

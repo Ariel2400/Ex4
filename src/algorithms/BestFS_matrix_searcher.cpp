@@ -44,10 +44,10 @@ void BestFSMatrixSearcher::update_in_queue(
 }
 
 SearchStatus BestFSMatrixSearcher::search(const Problem &problem,
-                                          std::string *solution, int *weight) {
+                                          std::string *solution, uint32_t *weight) {
   std::unique_ptr<Matrix> matrix = std::make_unique<Matrix>(*(problem.matrix));
-  int height = matrix->get_height();
-  int width = matrix->get_width();
+  uint32_t height = matrix->get_height();
+  uint32_t width = matrix->get_width();
   // check if start and end coordinates are correct
   if (problem.start_row < 0 || problem.start_row >= height ||
       problem.start_column < 0 || problem.start_column >= width ||
@@ -68,8 +68,8 @@ SearchStatus BestFSMatrixSearcher::search(const Problem &problem,
                  matrix->get_value(problem.start_row, problem.start_column)));
   // mark which cells are done being developed
   std::unique_ptr<Matrix> closed = std::make_unique<Matrix>(height, width);
-  for (int i = 0; i < height; ++i) {
-    for (int j = 0; j < width; ++j) {
+  for (uint32_t i = 0; i < height; ++i) {
+    for (uint32_t j = 0; j < width; ++j) {
       closed->set_value(i, j, NOT_CLOSED);
     }
   }
@@ -105,7 +105,7 @@ SearchStatus BestFSMatrixSearcher::search(const Problem &problem,
           Step(step.row, step.column + 1, step.path + "Right,",
                step.weight + matrix->get_value(step.row, step.column + 1)));
     }
-    for (int i = 0; i < successors.size(); ++i) {
+    for (uint32_t i = 0; i < successors.size(); ++i) {
       if (successors.at(i).row >= 0 && successors.at(i).row < height &&
           successors.at(i).column >= 0 && successors.at(i).column < width &&
           matrix->get_value(successors.at(i).row, successors.at(i).column) !=

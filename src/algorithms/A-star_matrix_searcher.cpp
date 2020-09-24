@@ -44,10 +44,10 @@ void AstarMatrixSearcher::update_in_queue(
 }
 
 SearchStatus AstarMatrixSearcher::search(const Problem &problem,
-                                         std::string *solution, int *weight) {
+                                         std::string *solution, uint32_t *weight) {
   std::unique_ptr<Matrix> matrix = std::make_unique<Matrix>(*(problem.matrix));
-  int height = matrix->get_height();
-  int width = matrix->get_width();
+  uint32_t height = matrix->get_height();
+  uint32_t width = matrix->get_width();
   // check if start and end coordinates are correct
   if (problem.start_row < 0 || problem.start_row >= height ||
       problem.start_column < 0 || problem.start_column >= width ||
@@ -70,8 +70,8 @@ SearchStatus AstarMatrixSearcher::search(const Problem &problem,
   open.push(start);
   // mark which cells are done being developed
   std::unique_ptr<Matrix> closed = std::make_unique<Matrix>(height, width);
-  for (int i = 0; i < height; ++i) {
-    for (int j = 0; j < width; ++j) {
+  for (uint32_t i = 0; i < height; ++i) {
+    for (uint32_t j = 0; j < width; ++j) {
       closed->set_value(i, j, NOT_CLOSED);
     }
   }
@@ -111,7 +111,7 @@ SearchStatus AstarMatrixSearcher::search(const Problem &problem,
       successor.setHeuristic(problem.end_row, problem.end_column);
       successors.push_back(successor);
     }
-    for (int i = 0; i < successors.size(); ++i) {
+    for (uint32_t i = 0; i < successors.size(); ++i) {
       if (matrix->get_value(successors.at(i).row, successors.at(i).column) !=
               BLOCK &&
           closed->get_value(successors.at(i).row, successors.at(i).column) !=
@@ -128,12 +128,12 @@ SearchStatus AstarMatrixSearcher::search(const Problem &problem,
 
 AstarMatrixSearcher::~AstarMatrixSearcher() {}
 
-int main() {
+uint32_t main() {
   std::unique_ptr<AstarMatrixSearcher> searcher =
       std::make_unique<AstarMatrixSearcher>();
   Problem problem = {std::make_unique<Matrix>(3, 3), 0, 0, 0, 0};
-  for (int i = 0; i < problem.matrix->get_height(); ++i) {
-    for (int j = 0; j < problem.matrix->get_width(); ++j) {
+  for (uint32_t i = 0; i < problem.matrix->get_height(); ++i) {
+    for (uint32_t j = 0; j < problem.matrix->get_width(); ++j) {
       problem.matrix->set_value(i, j, 1);
     }
   }
@@ -144,7 +144,7 @@ int main() {
   // problem.matrix->set_value(3, 3, 0);
   // problem.matrix->set_value(3, 2, 0);
   std::string solution = "";
-  int weight = 0;
+  uint32_t weight = 0;
   SearchStatus status = searcher->search(problem, &solution, &weight);
   std::cout << solution << std::endl;
   std::cout << weight << std::endl;

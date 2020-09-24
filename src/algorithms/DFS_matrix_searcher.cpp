@@ -18,12 +18,12 @@ DFSMatrixSearcher::operator=(const DFSMatrixSearcher &other) {
 
 // recursively looks for a path from each cell by looking for a path from the
 // adjacent cells and marking visited cells
-bool DFSMatrixSearcher::is_there_path(const Problem &problem, int i, int j,
+bool DFSMatrixSearcher::is_there_path(const Problem &problem, uint32_t i, uint32_t j,
                                       std::unique_ptr<Matrix> &visited,
-                                      std::string *solution, int *weight) {
+                                      std::string *solution, uint32_t *weight) {
   std::unique_ptr<Matrix> matrix = std::make_unique<Matrix>(*(problem.matrix));
-  int height = matrix->get_height();
-  int width = matrix->get_width();
+  uint32_t height = matrix->get_height();
+  uint32_t width = matrix->get_width();
   if (i >= 0 && i < height && j >= 0 && j < width &&
       matrix->get_value(i, j) != BLOCK &&
       visited->get_value(i, j) == NOT_VISITED) {
@@ -57,10 +57,10 @@ bool DFSMatrixSearcher::is_there_path(const Problem &problem, int i, int j,
 }
 
 SearchStatus DFSMatrixSearcher::search(const Problem &problem,
-                                       std::string *solution, int *weight) {
+                                       std::string *solution, uint32_t *weight) {
   std::unique_ptr<Matrix> matrix = std::make_unique<Matrix>(*(problem.matrix));
-  int height = matrix->get_height();
-  int width = matrix->get_width();
+  uint32_t height = matrix->get_height();
+  uint32_t width = matrix->get_width();
   // check if start and end coordinates are correct
   if (problem.start_row < 0 || problem.start_row >= height ||
       problem.start_column < 0 || problem.start_column >= width ||
@@ -77,8 +77,8 @@ SearchStatus DFSMatrixSearcher::search(const Problem &problem,
   }
   // mark which cells are done being developed
   std::unique_ptr<Matrix> visited = std::make_unique<Matrix>(height, width);
-  for (int i = 0; i < height; ++i) {
-    for (int j = 0; j < width; ++j) {
+  for (uint32_t i = 0; i < height; ++i) {
+    for (uint32_t j = 0; j < width; ++j) {
       visited->set_value(i, j, NOT_VISITED);
     }
   }
