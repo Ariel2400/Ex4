@@ -1,20 +1,38 @@
 #include "graph_client_handler.hpp"
+GraphClientHandler::GraphClientHandler(MatrixSearcher *searcher){
+  this->algorithm = searcher;
+};
 
 void GraphClientHandler::handleClient(int cs, int ss) {
   char *buffer = (char *)malloc(BUFFER * sizeof(char));
   read(ss, (void *)buffer, BUFFER);
   std::vector<std::string> lines;
-  std::stringstream ss(buffer);
+  std::stringstream sst(buffer);
   std::string line;
-  while (std::getline(ss, line, "\\r\\n")) {
+  while (std::getline(sst, line)) {
     lines.push_back(line);
   }
-  parse_input(lines);
+  auto problem = parse_input(lines);
+
+  std::string path;
+  uint32_t *weight = 0;
+  SearchStatus status = this->algorithm->search(*problem, &path, weight);
+  std::string result("Version: 1.0\r\n");
+  if(status == PATH_FOUND){
+    result.append("status: " + std::to_string(status) + "\r\nresponse_length: " +std::to_string(sizeof(path))+"\r\n\r\n");
+    result.append(path+"\r\n\r\n");
+  }
+  else{
+    result.append("status: " + std::to_string(status));
+  }
+  write(cs)
 };
+
+
 std::unique_ptr<Problem> parse_input(std::vector<std::string> input) {
   std::regex matrix_param("([1-9][0-9]*),([1-9][0-9]*)");
   std::regex matrix_line_format(
-      "(\\s*[0-9]+((.[0-9]+)?)\\s*,)*\\s*[0-9]+((.[0-9]+)?)\\s*");
+      "(([0-9]+((.[0-9]+)?)*)|b,)*(([0-9]+((.[0-9]+)?))|b)");
   std::regex io_line("([1-9][0-9]*|0),([1-9][0-9]*|0)");
   uint32_t line_len = -1;
   uint32_t height, width;
@@ -34,7 +52,7 @@ std::unique_ptr<Problem> parse_input(std::vector<std::string> input) {
           return NULL;
         }
         width = stoi(input[i].substr(index + 1, input[i].size() - index - 1));
-        problem = std::make_unique<Problem>;
+        problem = std::make_unique<Problem>();
         problem->matrix = std::make_unique<Matrix>(height, width);
       }
     }
@@ -72,17 +90,17 @@ std::unique_ptr<Problem> parse_input(std::vector<std::string> input) {
 
       else {
         if (input[i].size() != width) {
-          return NULL
+          return NULL;
         }
         std::vector<std::string> values;
-        std::stringstream ss(input[i]);
+        std::stringstream sst(input[i]);
         std::string value;
-        while (std::getline(ss, value, ",")) {
+        while (std::getline(sst, value, ',')) {
           values.push_back(value);
         }
         for (int j = 0; j < values.size(); ++j) {
-          if (stod(values[j]) == 0.0) {
-            return NULL;
+          if(values[j] == "b"){
+            problem->matrix->set_value(i, j, 0.0);
           }
           problem->matrix->set_value(i, j, stod(values[j]));
         }
@@ -90,4 +108,8 @@ std::unique_ptr<Problem> parse_input(std::vector<std::string> input) {
     }
   }
   return problem;
+
+  int main(){
+
+  }
 }
