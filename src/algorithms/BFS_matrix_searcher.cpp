@@ -17,10 +17,10 @@ BFSMatrixSearcher::operator=(const BFSMatrixSearcher &other) {
 }
 
 SearchStatus BFSMatrixSearcher::search(const Problem &problem,
-                                       std::string *solution, int *weight) {
+                                       std::string *solution, uint32_t *weight) {
   std::unique_ptr<Matrix> matrix = std::make_unique<Matrix>(*(problem.matrix));
-  int height = matrix->get_height();
-  int width = matrix->get_width();
+  uint32_t height = matrix->get_height();
+  uint32_t width = matrix->get_width();
   // check if start and end coordinates are correct
   if (problem.start_row < 0 || problem.start_row >= height ||
       problem.start_column < 0 || problem.start_column >= width ||
@@ -39,8 +39,8 @@ SearchStatus BFSMatrixSearcher::search(const Problem &problem,
   std::queue<Step> step_queue;
   // mark which cells have already been visited
   std::unique_ptr<Matrix> visited = std::make_unique<Matrix>(height, width);
-  for (int i = 0; i < height; ++i) {
-    for (int j = 0; j < width; ++j) {
+  for (uint32_t i = 0; i < height; ++i) {
+    for (uint32_t j = 0; j < width; ++j) {
       if (matrix->get_value(i, j) == BLOCK) {
         visited->set_value(i, j, VISITED);
       } else {

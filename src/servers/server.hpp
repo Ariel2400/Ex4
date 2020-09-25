@@ -1,4 +1,9 @@
-#include "../client_handlers/client_handler.cpp"
+#include "client_handler.hpp"
+#include "graph_client_handler.hpp"
+#include "A-star_matrix_searcher.hpp"
+#include "BestFS_matrix_searcher.hpp"
+#include "BFS_matrix_searcher.hpp"
+#include "DFS_matrix_searcher.hpp"
 
 class Server {
     public:
