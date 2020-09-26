@@ -1,5 +1,4 @@
 #include <queue>
-//#include <iostream>
 
 #include "BFS_matrix_searcher.hpp"
 
@@ -7,27 +6,11 @@
 #define VISITED 1
 #define NOT_VISITED 0
 
-BFSMatrixSearcher::BFSMatrixSearcher() {}
-
-BFSMatrixSearcher::BFSMatrixSearcher(const BFSMatrixSearcher &other) {}
-
-BFSMatrixSearcher &
-BFSMatrixSearcher::operator=(const BFSMatrixSearcher &other) {
-  return *this;
-}
-
 SearchStatus BFSMatrixSearcher::search(const Problem &problem,
-                                       std::string *solution, uint32_t *weight) {
+                                       std::string *solution, double *weight) {
   std::unique_ptr<Matrix> matrix = std::make_unique<Matrix>(*(problem.matrix));
   uint32_t height = matrix->get_height();
   uint32_t width = matrix->get_width();
-  // check if start and end coordinates are correct
-  if (problem.start_row < 0 || problem.start_row >= height ||
-      problem.start_column < 0 || problem.start_column >= width ||
-      problem.end_row < 0 || problem.end_row >= height ||
-      problem.end_column < 0 || problem.end_column >= width) {
-    return OUT_OF_BOUNDS_INDEX;
-  }
   // check if the path starts and ends on the same cell
   if (problem.start_row == problem.end_row &&
       problem.start_column == problem.end_column) {
@@ -63,7 +46,7 @@ SearchStatus BFSMatrixSearcher::search(const Problem &problem,
       return PATH_FOUND;
     }
     // the adjacent cells
-    if (step.row - 1 >= 0 &&
+    if (step.row >= 1 &&
         visited->get_value(step.row - 1, step.column) == 0) {
       step_queue.push(
           Step(step.row - 1, step.column, step.path + "Up,",
@@ -77,7 +60,7 @@ SearchStatus BFSMatrixSearcher::search(const Problem &problem,
                step.weight + matrix->get_value(step.row + 1, step.column)));
       visited->set_value(step.row + 1, step.column, VISITED);
     }
-    if (step.column - 1 >= 0 &&
+    if (step.column >= 1 &&
         visited->get_value(step.row, step.column - 1) == 0) {
       step_queue.push(
           Step(step.row, step.column - 1, step.path + "Left,",
@@ -94,27 +77,3 @@ SearchStatus BFSMatrixSearcher::search(const Problem &problem,
   }
   return PATH_NOT_FOUND;
 }
-
-BFSMatrixSearcher::~BFSMatrixSearcher() {}
-
-/*
-int main() {
-    std::unique_ptr<BFSMatrixSearcher> searcher =
-std::make_unique<BFSMatrixSearcher>(); Problem problem =
-{std::make_unique<Matrix>(4, 4), 0, 0, 3, 0}; for (int i = 0; i <
-problem.matrix->get_height(); ++i) { for (int j =0; j <
-problem.matrix->get_width(); ++j) { problem.matrix->set_value(i, j, 2);
-        }
-    }
-    problem.matrix->set_value(1, 0, 0);
-    problem.matrix->set_value(1, 1, 0);
-    problem.matrix->set_value(1, 2, 0);
-    problem.matrix->set_value(1, 3, 0);
-    problem.matrix->set_value(3, 3, 0);
-    problem.matrix->set_value(3, 2, 0);
-    std::string solution;
-    SearchStatus status = searcher->search(problem, &solution);
-    std::cout << solution << std::endl;
-    std::cout << status << std::endl;
-}
-*/

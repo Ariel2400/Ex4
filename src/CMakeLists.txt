@@ -32,6 +32,7 @@ algorithms/BFS_matrix_searcher.cpp
 algorithms/DFS_matrix_searcher.cpp
 algorithms/problem.cpp
 client_handlers/graph_client_handler.cpp
+client_handlers/client_redirector.cpp
 matrices/error_code.cpp
 matrices/matrix_class.cpp
 matrices/matrix.cpp
