@@ -7,7 +7,7 @@
   entry and exit points
 * if succeced, the result is sent from the server. else, corresponding error code is printed
 
-## Error Codes:
+## Serach Statuses:
 0. **PATH_FOUND** -  no error.
 1. **PATH_NOT_FOUND** - thrown if the algorithm couldn't find a path with given matrix(due to b values for example).
 2. **MISSING_BREAK_LINE** - there is no double breakline at the end(corrupted data).
