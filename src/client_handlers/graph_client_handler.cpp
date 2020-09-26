@@ -8,6 +8,9 @@
 #include <algorithm>
 
 #include "graph_client_handler.hpp"
+GraphClientHandler::GraphClientHandler(MatrixSearcher *searcher){
+  this->algorithm = searcher;
+};
 
 #define BUFFER_SIZE 4096
 #define NONMEMBERLINES 4

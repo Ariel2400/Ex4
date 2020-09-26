@@ -6,7 +6,7 @@
 
 // recursively looks for a path from each cell by looking for a path from the
 // adjacent cells and marking visited cells
-bool DFSMatrixSearcher::is_there_path(const Problem &problem, int i, int j,
+bool DFSMatrixSearcher::is_there_path(const Problem &problem, uint32_t i, uint32_t j,
                                       std::unique_ptr<Matrix> &visited,
                                       std::string *solution, double *weight) {
   std::unique_ptr<Matrix> matrix = std::make_unique<Matrix>(*(problem.matrix));

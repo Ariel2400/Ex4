@@ -29,7 +29,7 @@ private:
      returns true if there is a path in the matrix from start to end.
      if so, assigns a description of the path into solution
      and its weight into weight. */
-  bool is_there_path(const Problem &problem, int i, int j,
+  bool is_there_path(const Problem &problem, uint32_t i, uint32_t j,
                      std::unique_ptr<Matrix> &visited, std::string *solution,
                      double *weight);
 };
